@@ -1,8 +1,12 @@
 package edu.illinois.cs.cs125.spring2019.lab12;
 
+import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -35,10 +39,20 @@ public final class MainActivity extends AppCompatActivity {
 
         // Set up the queue for our API requests
         requestQueue = Volley.newRequestQueue(this);
-
         setContentView(R.layout.activity_main);
 
-        startAPICall("192.17.96.8");
+        Button button = findViewById(R.id.lookup_address);
+        TextInputEditText text = findViewById(R.id.IP);
+
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startAPICall(text.getText().toString());
+            }
+        });
+
+
+
     }
 
     /**
@@ -85,9 +99,24 @@ public final class MainActivity extends AppCompatActivity {
      */
     void apiCallDone(final JSONObject response) {
         try {
+            TextView text = findViewById(R.id.textView);
+            text.setText(response.get("hostname").toString() + "\n" +
+                    response.get("city").toString() + "\n" +
+                    response.get("ip").toString() + "\n" +
+                    response.get("region").toString() + "\n" +
+                    response.get("org").toString() + "\n" +
+                    response.get("loc").toString() + "\n" +
+                    response.get("postal").toString());
+
+
+
             Log.d(TAG, response.toString(2));
             // Example of how to pull a field off the returned JSON object
             Log.i(TAG, response.get("hostname").toString());
+            Log.i(TAG, response.get("city").toString());
+            Log.i(TAG, response.get("region").toString());
+            Log.i(TAG, response.get("country").toString());
+            Log.i(TAG, response.get("ip").toString());
         } catch (JSONException ignored) { }
     }
 }
